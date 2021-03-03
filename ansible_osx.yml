@@ -25,7 +25,6 @@
         name: "{{ item }}"
       ignore_errors: yes
       with_items:
-        - 1password
         - adoptopenjdk/openjdk/adoptopenjdk8
         - android-sdk
         - android-studio
@@ -37,7 +36,6 @@
         - google-cloud-sdk
         - graphql-playground
         - iterm2
-        - kindle
         - microsoft-office
         - ngrok
         - osxfuse
@@ -69,7 +67,7 @@
           'dbt@0.18.0',
           'direnv',
           'dnsmasq',
-          'erlang',
+          # 'erlang',
           'fzf',
           'gnu-time',
           'gpg',
