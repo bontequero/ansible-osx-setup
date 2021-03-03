@@ -173,6 +173,7 @@
         - wingrunr21.vscode-ruby
         - xabikos.javascriptsnippets
         - streetsidesoftware.code-spell-checker
+        - golang.Go
 
     - git:
         repo: https://github.com/asdf-vm/asdf.git
@@ -196,6 +197,7 @@
         - nodejs
         - python
         - erlang
+        - golang
 
     - name: "Install Default Python"
       shell: |
@@ -241,6 +243,12 @@
         asdf global elixir 1.11.2
         mix local.hex --force
         mix archive.install hex phx_new 1.5.7 --force
+
+    - name: "Install default golang"
+      shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+        asdf install golang 1.16
+        asdf global golang 1.16
 
     - name: Install yarn packages
       shell: yarn global add {{ item }} --prefix /usr/local
