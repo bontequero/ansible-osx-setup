@@ -21,6 +21,7 @@
         ]
 
     - name: Install core packages via brew casks
+      tags: ['install']
       community.general.homebrew_cask:
         name: "{{ item }}"
       ignore_errors: yes
@@ -52,9 +53,18 @@
         - visual-studio-code
         - vlc
         - zeplin
-        - zoomus
+        - zoom
+        - firefox
+        - alacritty
+        - homebrew/cask-fonts/font-fira-code
+        - veracrypt
+        - brave-browser
+        - bitwarden
+        - nordvpn
+        - freetube
 
     - name: "Install homebrew packages"
+      tags: ['install']
       community.general.homebrew:
         name: [
           'autoconf',
@@ -62,12 +72,12 @@
           'aws-iam-authenticator',
           'awscli',
           'bfg',
+          'bash-completion',
           'coreutils',
           'curl',
           'dbt@0.18.0',
           'direnv',
           'dnsmasq',
-          # 'erlang',
           'fzf',
           'gnu-time',
           'gpg',
@@ -102,9 +112,26 @@
           'yarn',
           'zlib',
           'zsh',
+          'zsh-completions',
+          'neovim',
+          'fish',
+          'delve',
+          'bat',
+          'ripgrep',
+          'fd',
+          'tldr',
+          'syncthing',
         ]
         state: present
         update_homebrew: yes
+
+    - name: "Create a default tmux configuration"
+      tags: tmux
+      template:
+        src: templates/.tmux.conf.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/.tmux.conf
+        owner: "{{ lookup('env', 'USER') }}"
+        force: no
 
     - name: "Link ImageMagick6 as main version (for rmagick gem)"
       shell: brew link -f imagemagick@6
@@ -143,7 +170,7 @@
         owner: "{{ lookup('env', 'USER') }}"
         force: no
 
-    - name: Create a default VSCode keuybinding configuration
+    - name: Create a default VSCode keybinding configuration
       template:
         src: templates/vscode-keybindings.json.j2
         dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/keybindings.json
@@ -175,7 +202,8 @@
         - streetsidesoftware.code-spell-checker
         - golang.Go
 
-    - git:
+    - name: "get asdf repo"
+      git:
         repo: https://github.com/asdf-vm/asdf.git
         dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
         version: v0.7.1
@@ -186,6 +214,9 @@
         dest: /Users/{{ lookup('env', 'USER') }}/.asdfrc
         owner: "{{ lookup('env', 'USER') }}"
         force: yes
+    
+    - name: "update asdf"
+      command: asdf update
 
     - name: "Install asdf plugins"
       shell: |
@@ -240,6 +271,8 @@
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install elixir 1.11.2
+        asdf install erlang 23.2.7
+        asdf global erlang 23.2.7
         asdf global elixir 1.11.2
         mix local.hex --force
         mix archive.install hex phx_new 1.5.7 --force
@@ -247,8 +280,8 @@
     - name: "Install default golang"
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf install golang 1.16
-        asdf global golang 1.16
+        asdf install golang 1.16.2
+        asdf global golang 1.16.2
 
     - name: Install yarn packages
       shell: yarn global add {{ item }} --prefix /usr/local
